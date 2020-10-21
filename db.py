@@ -25,16 +25,25 @@ class DB:
             print(err)
             sys.exit(1)
 
-    def execute(self, sql_string):
-        if sql_string is None:
-            print("No argument supplied")
-            return
+    def get_all_feeds(self):
         try:
             cur = self.conn.cursor()
+            sql_string = "SELECT * FROM feed;"
             cur.execute(sql_string)
-            res = cur.fetchone()
+            res = cur.fetchall()
             return res
         except psycopg2.DatabaseError as err:
-            print("Error")
+            print("SELECT ERROR")
+        finally:
+            cur.close()
+
+    def add_new_feed(self, name, link):
+        try:
+            cur = self.conn.cursor()
+            sql_string = f"INSERT INTO feed (name, link) VALUES ('{name}', '{link}');"
+            cur.execute(sql_string)
+            return True
+        except psycopg2.DatabaseError as err:
+            print("INSERT ERROR", err)
         finally:
             cur.close()
