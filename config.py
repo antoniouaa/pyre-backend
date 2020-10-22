@@ -16,6 +16,7 @@ class Config:
         self.database = parser.get("postgresql", "database")
         self.user = parser.get("postgresql", "user")
         self.password = parser.get("postgresql", "password")
+        self.schema = parser.get("sql", "schema")
 
     def as_dict(self):
         config = {}

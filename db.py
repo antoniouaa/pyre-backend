@@ -5,14 +5,17 @@ from config import Config
 
 class DB:
     def __init__(self):
-        self.config = Config().as_dict()
+        self.config = Config()
         self.conn = self.connect()
 
     def connect(self):
         conn = None
         try:
-            conn = psycopg2.connect(**self.config)
+            conn = psycopg2.connect(**self.config.as_dict())
             conn.autocommit = True
+            with open(self.config.schema) as schema, conn.cursor() as cur:
+                cur.execute(schema.read())
+                print("Table 'feed' created")
             print("Database connection established")
             return conn
         except psycopg2.DatabaseError as err:
@@ -40,7 +43,7 @@ class DB:
     def get_feed_by_name(self, name):
         try:
             with self.conn.cursor() as cur:
-                cur.execute("SELECT * FROM feed WHERE name LIKE %s", (name,))
+                cur.execute("SELECT * FROM feed WHERE title LIKE %s", (name,))
                 return cur.fetchone()
         except psycopg2.DatabaseError as err:
             print("DELETE ERROR", err)

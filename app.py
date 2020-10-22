@@ -15,8 +15,14 @@ def feeds():
     results = db.get_all_feeds()
     if results:
         response = [
-            {"id": feed_id, "name": name, "link": link}
-            for feed_id, name, link in results
+            {
+                "id": feed_id,
+                "title": title,
+                "link": link,
+                "date_added": date_added,
+                "description": description,
+            }
+            for feed_id, title, link, date_added, description in results
         ]
         return jsonify(response), 200
     else:
