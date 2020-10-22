@@ -16,7 +16,7 @@ def feeds():
     if results:
         response = [{"id": feed_id, "name": name, "link": link}
                     for feed_id, name, link in results]
-        return jsonify(response)
+        return jsonify(response), 200
     else:
         return jsonify(message="Empty Database", statusCode=404), 404
 
@@ -26,8 +26,25 @@ def add_feed():
     name = request.form.get("name")
     link = request.form.get("link")
     status = db.add_new_feed(name, link)
-    print(status)
     if status:
         return jsonify(message="Success", statusCode=201), 201
     else:
         return jsonify(message="Failure to post", statusCode=404), 404
+
+
+@app.route("/feeds/<name>")
+def get_feed(name):
+    response = db.get_feed_by_name(name)
+    if response:
+        return jsonify(response), 200
+    else:
+        return jsonify(message="Feed not found", statusCode=404), 404
+
+
+@app.route("/feeds/delete/<name>", methods=["DELETE"])
+def delete_feed(name):
+    response = db.delete_feed(name)
+    if response:
+        return jsonify(message="Delete successful", statusCode=204), 204
+    else:
+        return jsonify(message="Feed not found", statusCode=404), 404
