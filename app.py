@@ -14,8 +14,10 @@ db = DB()
 def feeds():
     results = db.get_all_feeds()
     if results:
-        response = [{"id": feed_id, "name": name, "link": link}
-                    for feed_id, name, link in results]
+        response = [
+            {"id": feed_id, "name": name, "link": link}
+            for feed_id, name, link in results
+        ]
         return jsonify(response), 200
     else:
         return jsonify(message="Empty Database", statusCode=404), 404

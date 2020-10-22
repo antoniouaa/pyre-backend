@@ -12,6 +12,7 @@ class DB:
         conn = None
         try:
             conn = psycopg2.connect(**self.config)
+            conn.autocommit = True
             print("Database connection established")
             return conn
         except psycopg2.DatabaseError as err:
@@ -51,7 +52,8 @@ class DB:
         try:
             with self.conn.cursor() as cur:
                 cur.execute(
-                    "INSERT INTO feed (name, link) VALUES (%s, %s)", (name, link))
+                    "INSERT INTO feed (name, link) VALUES (%s, %s)", (name, link)
+                )
                 return cur.statusmessage
         except psycopg2.DatabaseError as err:
             print("INSERT ERROR", err)
